@@ -64,9 +64,9 @@
 #	part; AT90USB82 which is close enough in memory size and organization
 
 # for Uno R2
-#MCU = atmega8u2
+#MCU = at90usb82
 # for Uno R3
-MCU = atmega16u2
+MCU = at90usb162
 
 MCU_AVRDUDE = $(MCU)
 MCU_DFU = $(MCU)
@@ -139,7 +139,7 @@ OBJDIR = .
 
 
 # Path to the LUFA library  ( to LUFA-100807 )
-LUFA_PATH = ../../LUFA-100807
+LUFA_PATH = ../../
 
 
 # LUFA library compile-time options
@@ -387,10 +387,10 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 # to get a full listing.
 #
 #AVRDUDE_PROGRAMMER = avrispmkii
-AVRDUDE_PROGRAMMER = usbtiny
+AVRDUDE_PROGRAMMER = arduino
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
-AVRDUDE_PORT = usb
+AVRDUDE_PORT = COM7
 
 AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
 #AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep
@@ -412,7 +412,7 @@ AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
 
 AVRDUDE_FORCE = -F
 
-AVRDUDE_FLAGS = -p $(MCU_AVRDUDE) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
+AVRDUDE_FLAGS = -p $(MCU_AVRDUDE) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER) -b 19200
 AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
 AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
@@ -750,7 +750,7 @@ $(OBJDIR)/%.o : %.S
 
 
 # Target: clean project.
-clean: begin clean_list clean_binary end
+clean: begin clean_list clean_binary clean_dep end
 
 clean_binary:
 	$(REMOVE) $(TARGET).hex
@@ -778,6 +778,9 @@ doxygen:
 
 clean_doxygen:
 	rm -rf Documentation
+	
+clean_dep:
+	rm -rf .dep
 
 # Create object files directory
 $(shell mkdir $(OBJDIR) 2>/dev/null)
@@ -790,5 +793,5 @@ $(shell mkdir $(OBJDIR) 2>/dev/null)
 # Listing of phony targets.
 .PHONY : all begin finish end sizebefore sizeafter gccversion \
 build elf hex eep lss sym coff extcoff doxygen clean          \
-clean_list clean_doxygen program dfu flip flip-ee dfu-ee      \
+clean_list clean_doxygen clean_dep program dfu flip flip-ee dfu-ee      \
 debug gdb-config

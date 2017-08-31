@@ -76,8 +76,8 @@
 		#define LEDMASK_BUSY             (LEDS_LED1 | LEDS_LED2)		
 		
 		typedef uint8_t uchar;
-		#define HW_CDC_BULK_OUT_SIZE     8
-		#define HW_CDC_BULK_IN_SIZE      8
+		#define HW_CDC_BULK_OUT_SIZE     16
+		#define HW_CDC_BULK_IN_SIZE      16
 
 		#define	TRUE			1
 		#define	FALSE			0

@@ -60,58 +60,6 @@
 	#warning USE_INTERNAL_SERIAL is not available on this AVR - please manually construct a device serial descriptor.
 #endif
 
-/** Device descriptor structure. This descriptor, located in FLASH memory, describes the overall
- *  device characteristics, including the supported USB version, control endpoint size and the
- *  number of device configurations. The descriptor is read out by the USB host when the enumeration
- *  process begins.
- */
-/* for SERIAL */
-USB_Descriptor_Device_t PROGMEM DeviceDescriptorSerial =
-{
-	.Header                 = {.Size = sizeof(USB_Descriptor_Device_t), .Type = DTYPE_Device},
-		
-	.USBSpecification       = VERSION_BCD(01.10),
-	.Class                  = 0x02,
-	.SubClass               = 0x00,
-	.Protocol               = 0x00,
-				
-	.Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
-		
-	.VendorID               = ARDUINO_VID, // VID
-
-	.ProductID          	= ARDUINO_MODEL_PID, // PID
-	.ReleaseNumber          = 0x0001,
-		
-	.ManufacturerStrIndex   = 0x01,
-	.ProductStrIndex        = 0x02,
-	.SerialNumStrIndex      = USE_INTERNAL_SERIAL,
-		
-	.NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
-};
-
-/* for MIDI */
-USB_Descriptor_Device_t PROGMEM DeviceDescriptorMIDI =
-{
-	.Header                 = {.Size = sizeof(USB_Descriptor_Device_t), .Type = DTYPE_Device},
-		
-	.USBSpecification       = VERSION_BCD(01.10),
-	.Class                  = 0x00,
-	.SubClass               = 0x00,
-	.Protocol               = 0x00,
-				
-	.Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
-		
-	.VendorID               = 0x03EB, // Atmel
-	.ProductID              = 0x2048, // LUFA USB-MIDI Demo application
-	.ReleaseNumber          = 0x0000,
-		
-	.ManufacturerStrIndex   = 0x01,
-	.ProductStrIndex        = 0x02,
-	.SerialNumStrIndex      = NO_DESCRIPTOR,
-		
-	.NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
-};
-
 /** Configuration descriptor structure. This descriptor, located in FLASH memory, describes the usage
  *  of the device in one of its supported configurations, including information about any device interfaces
  *  and endpoints. The descriptor is read out by the USB host during the enumeration process when selecting
@@ -424,9 +372,9 @@ USB_Descriptor_String_t PROGMEM ManufacturerStringSerial =
 /* for MIDI */
 USB_Descriptor_String_t PROGMEM ManufacturerStringMIDI =
 {
-	.Header                 = {.Size = USB_STRING_LEN(17), .Type = DTYPE_String},
+	.Header                 = {.Size = USB_STRING_LEN(7), .Type = DTYPE_String},
 
-	.UnicodeString          = L"kuwatay@nifty.com"
+	.UnicodeString          = L"Yaeltex"
 };
 /** Product descriptor string. This is a Unicode string containing the product's details in human readable form,
  *  and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
@@ -450,12 +398,81 @@ USB_Descriptor_String_t PROGMEM ProductStringSerial =
 	#endif
 	
 };
+/** Device descriptor structure. This descriptor, located in FLASH memory, describes the overall
+ *  device characteristics, including the supported USB version, control endpoint size and the
+ *  number of device configurations. The descriptor is read out by the USB host when the enumeration
+ *  process begins.
+ */
+/* for SERIAL */
+USB_Descriptor_Device_t PROGMEM DeviceDescriptorSerial =
+{
+	.Header                 = {.Size = sizeof(USB_Descriptor_Device_t), .Type = DTYPE_Device},
+		
+	.USBSpecification       = VERSION_BCD(01.10),
+	.Class                  = 0x02,
+	.SubClass               = 0x00,
+	.Protocol               = 0x00,
+				
+	.Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
+		
+	.VendorID               = ARDUINO_VID, // VID
+	.ProductID          	= 0x0001, 	   
+	.ReleaseNumber          = 0x0001,
+		
+	.ManufacturerStrIndex   = 0x01,
+	.ProductStrIndex        = 0x02,
+	.SerialNumStrIndex      = USE_INTERNAL_SERIAL,
+		
+	.NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
+};
+
 /* for MIDI */
 USB_Descriptor_String_t PROGMEM ProductStringMIDI =
 {
-	.Header                 = {.Size = USB_STRING_LEN(8), .Type = DTYPE_String},
+	.Header                 = {.Size = USB_STRING_LEN(13), .Type = DTYPE_String},
 
-	.UnicodeString          = L"MocoLUFA"
+	.UnicodeString          = L"WALNUTS MIXXR"
+};
+
+
+/* for MIDI */
+USB_Descriptor_Device_t PROGMEM DeviceDescriptorMIDI =
+{
+	.Header                 = {.Size = sizeof(USB_Descriptor_Device_t), .Type = DTYPE_Device},
+		
+	.USBSpecification       = VERSION_BCD(01.10),
+	.Class                  = 0x00,
+	.SubClass               = 0x00,
+	.Protocol               = 0x00,
+				
+	.Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
+		
+	.VendorID               = ARDUINO_VID, // Atmel
+	/* 
+		PID:
+			Kilomux: 1000	
+			Kilomux1: 1001	
+			Kilomux2: 1002
+			...
+			Kilomux10: 1010
+			Miniblock: 1011
+			Miniblock2: 1012
+			...
+			Kilonome: 1020
+			MIXXR:	1022
+			PaloAlto: 1023
+			
+			...
+			Custom YTX builds: 1100 and up
+	*/
+	.ProductID              = 1101, 
+	.ReleaseNumber          = 0x0000,
+		
+	.ManufacturerStrIndex   = 0x01,
+	.ProductStrIndex        = 0x02,
+	.SerialNumStrIndex      = NO_DESCRIPTOR,
+		
+	.NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
 };
 
 /** This function is called by the library when in device mode, and must be overridden (see library "USB Descriptors"

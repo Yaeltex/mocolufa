@@ -65,7 +65,7 @@ volatile struct {
 
 #define    RX_SIZE        (HW_CDC_BULK_IN_SIZE)
 static uchar utxrdy = FALSE;	/* USB Packet ready in utx_buf */
-static uchar rx_buf[RX_SIZE];	/* tempory buffer */
+static uchar rx_buf[RX_SIZE];	/* temporary buffer */
 static uchar utx_buf[RX_SIZE];	/* BULK_IN buffer */
 
 #define    TX_SIZE        (HW_CDC_BULK_OUT_SIZE<<2)
@@ -119,16 +119,16 @@ void parseUSBMidiMessage(uchar *data, uchar len) {
       tx_buf[uwptr++] = *(data + i); /* copy to buffer */
       uwptr &= TX_MASK;
       if (i == 1) {
-	if ((cin == 5) || /* single byte system common */
-	    (cin == 15))  /* single byte */
-	  break;
+		if ((cin == 5) || /* single byte system common */
+			(cin == 15))  /* single byte */
+		  break;
       }
       if (i == 2) {
-	if ((cin == 2) ||  /* two-byte system common */
-	    (cin == 6) ||  /* system ex end with 2 bytes */
-	    (cin == 12) || /* program change */
-	    (cin == 13))   /* channel pressure */
-	  break;
+		if ((cin == 2) ||  /* two-byte system common */
+			(cin == 6) ||  /* system ex end with 2 bytes */
+			(cin == 12) || /* program change */
+			(cin == 13))   /* channel pressure */
+		  break;
       }
     }
   }
@@ -171,9 +171,9 @@ uchar parseSerialMidiMessage(uchar RxByte) {
     } else {
       utx_buf[sysExCnt++] = RxByte;
       if (sysExCnt == 4) {	/* buffer full */
-	utx_buf[0] = 0x04;	/* sysEx start */
-	sysExCnt = 1;
-	return TRUE;		/* send sysEx */
+		utx_buf[0] = 0x04;	/* sysEx start */
+		sysExCnt = 1;
+		return TRUE;		/* send sysEx */
       }
     }
     return FALSE;
@@ -356,7 +356,23 @@ void SetupHardware(void) {
   /* PB1 = LED, PB2 = (MIDI/SERIAL), PB3 (NORMAL/HIGH) */
   DDRB = 0x02;		/* PB1 = OUTPUT, PB2 = INPUT, PB3 = INPUT */
   PORTB = 0x0C;		/* PULL-UP PB2, PB3 */
-
+  
+  LEDs_Init();
+  
+  /*
+  Code added by Franco Grassano - Yaeltex
+  Delay to wait for the pulldown resistor to settle jumper pin to ground
+  when adding a long wire with a switch.
+  */
+  for (int a = 0; a<100; a++){
+	LEDs_TurnOnLEDs(LEDMASK_RX);
+	for (int b = 0; b<10000; b++){}
+	LEDs_TurnOffLEDs(LEDMASK_RX);
+  }  
+  /*
+  END
+  */
+  
   if ((PINB & 0x04) == 0) { /* Arduino-serial (JUMPER BTW PB2-GND) */
     mocoMode = 0;
     Serial_Init(9600, false);
@@ -378,7 +394,6 @@ void SetupHardware(void) {
   
   /* Hardware Initialization */
   USB_Init();
-  LEDs_Init();
 
   if (mocoMode == 0) {
     /* Pull target /RESET line high */
