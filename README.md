@@ -1,6 +1,13 @@
 
-mocoLUFA (MIDI firmware for Arduino Uno)
-======================
+# Yaeltex changes
+
+* At [Yaeltex](https://www.yaeltex.com), we build MIDI controllers, and we use mocoLUFA, but we needed to be able to switch form Serial to USB-Midi with a physical switch. The long wire connecting the switch to the ISP header made the signal unstable, so it would never boot in USB-MIDI mode. To prevent this, we soldered a 10 MOhm resistor between pins 4 and 6, but as it is very large, it needed some time at boot to settle the signal. So we added a small delay with a for loop in SetupHardware function in dualMoco.c in order to wait for the pulldown resistor between ISP pins 4 and 6, to settle pin to ground. 
+* We increased the size of the buffers that send and receive USB messages (HW_CDC_BULK_OUT_SIZE and HW_CDC_BULK_IN_SIZE) to 16 so we cand send and receive up to 64 bytes of data with SysEx.
+  
+# Instructions from original mocolufa
+
+## mocoLUFA (MIDI firmware for Arduino Uno)
+=
 dualMocoLUFA Project
 Copyright (C) 2013,2014,2015 by morecat_lab
 
